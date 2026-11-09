@@ -1,72 +1,113 @@
-
 <!DOCTYPE html>
 <html lang="ru">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Вас заметили</title>
+<meta name="theme-color" content="#050505">
+<title>Демонстрация системы</title>
 <style>
-body {
-  background:#080808;
-  color:white;
-  font-family:Arial;
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  min-height:100vh;
-  margin:0;
-}
-main {
-  background:#111;
-  border:1px solid red;
-  border-radius:15px;
-  padding:25px;
-  text-align:center;
-  width:85%;
-  max-width:400px;
-}
-h1 {color:#ff3030}
-input {
-  padding:14px;
-  width:85%;
-  background:#080808;
-  color:white;
-  border:1px solid red;
-  text-align:center;
-}
-button {
-  padding:14px;
-  width:100%;
-  margin-top:15px;
-  background:#b51616;
-  color:white;
-  border:0;
-  border-radius:7px;
-}
-#exit {display:none}
+*{box-sizing:border-box}
+body{margin:0;background:#050505;color:#eee;font-family:Arial,Helvetica,sans-serif;min-height:100vh}
+.screen{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px}
+#intro{background:radial-gradient(ellipse at center,#260707 0,#090909 65%);flex-direction:column;text-align:center}
+.terminal{width:min(100%,650px);border:1px solid #9d1b1b;border-radius:12px;background:#080808;padding:22px;box-shadow:0 0 35px #a0000033;text-align:left}
+.topline{color:#ff4242;letter-spacing:3px;font-size:12px;margin-bottom:18px}
+#log{font:14px/1.8 monospace;color:#79e69a;min-height:150px;white-space:pre-wrap}
+.progress{height:7px;background:#292929;border-radius:9px;overflow:hidden;margin-top:18px}
+#bar{height:100%;width:0;background:#e32626;transition:width .15s linear}
+#warning{display:none;flex-direction:column;text-align:center;background:#080303}
+#warning h1{font-size:clamp(44px,12vw,92px);line-height:1;color:#ff2525;text-shadow:0 0 22px #f00;margin:0 0 20px}
+#warning p{color:#ddd;font-size:18px}
+.small{color:#888;font-size:11px;letter-spacing:2px;margin-top:28px}
+#site{display:none;align-items:center;justify-content:center;padding:24px;background:radial-gradient(circle at top,#260909 0,#100707 35%,#050505 75%)}
+.panel{width:min(100%,440px);padding:32px 24px;text-align:center;background:#0c0c0c;border:1px solid #8d1717;border-radius:16px;box-shadow:0 0 35px #dc000029}
+.panel h2{color:#ff3030;font-size:36px;margin:0 0 14px}
+.panel p{color:#ccc;line-height:1.5}
+input{width:100%;padding:15px;border-radius:8px;border:1px solid #555;background:#080808;color:white;font-size:18px;text-align:center;letter-spacing:5px}
+button{width:100%;margin-top:16px;padding:15px;border:0;border-radius:8px;background:#b51616;color:white;font-weight:bold;letter-spacing:2px}
+#exit{display:none;background:#242424;border:1px solid #ff3030}
+#msg{min-height:22px;color:#ff5555;font-size:13px}
 </style>
 </head>
 <body>
-<main>
-<h1>ВАС ЗАМЕТИЛИ</h1>
-<p>Шуточная демонстрация системы.<br>Введите пароль разработчика.</p>
-<input id="pass" type="password" placeholder="Пароль">
-<button onclick="check()">ПРОВЕРИТЬ</button>
-<p id="msg"></p>
-<button id="exit" onclick="finish()">ВЫЙТИ</button>
-</main>
+<section id="intro" class="screen">
+  <div class="terminal">
+    <div class="topline">DEMO SYSTEM // ИМИТАЦИЯ СКАНИРОВАНИЯ</div>
+    <div id="log"></div>
+    <div class="progress"><div id="bar"></div></div>
+  </div>
+  <div class="small">ЭТО ШУТОЧНАЯ ДЕМОНСТРАЦИЯ • НИКАКОГО НАБЛЮДЕНИЯ НЕТ</div>
+</section>
+
+<section id="warning" class="screen">
+  <h1>ВЫ ЗАМЕЧЕНЫ</h1>
+  <p>Это шуточная демонстрация. Никакие данные не собираются.</p>
+  <div class="small">ПЕРЕХОД К СЛЕДУЮЩЕЙ СТРАНИЦЕ…</div>
+</section>
+
+<section id="site" class="screen">
+  <main class="panel">
+    <div class="small">ДЕМОНСТРАЦИОННАЯ СТРАНИЦА</div>
+    <h2>ВАС ЗАМЕТИЛИ</h2>
+    <p>Введите пароль разработчика, чтобы завершить эту шуточную демонстрацию.</p>
+    <form id="form">
+      <input id="pass" type="password" inputmode="numeric" autocomplete="off" placeholder="Пароль" aria-label="Пароль разработчика">
+      <button type="submit">ПРОВЕРИТЬ</button>
+    </form>
+    <p id="msg" role="status"></p>
+    <button id="exit" type="button">ВЫЙТИ</button>
+  </main>
+</section>
+
 <script>
-function check() {
- if(document.getElementById('pass').value === '123456') {
-  document.getElementById('msg').textContent='Пароль принят!';
-  document.getElementById('exit').style.display='block';
- } else {
-  document.getElementById('msg').textContent='Неверный пароль!';
- }
+const intro=document.getElementById('intro');
+const warning=document.getElementById('warning');
+const site=document.getElementById('site');
+const log=document.getElementById('log');
+const bar=document.getElementById('bar');
+const lines=[
+  '[OK] Запуск демонстрационного интерфейса...',
+  '[OK] Проверка тестового соединения...',
+  '[OK] Подготовка визуальных эффектов...',
+  '[OK] Сканирование завершено (имитация).'
+];
+let i=0;
+function nextLine(){
+  if(i<lines.length){
+    log.textContent+=lines[i]+'\n';
+    i++;
+    bar.style.width=(i/lines.length*100)+'%';
+    setTimeout(nextLine,650);
+  }else{
+    setTimeout(()=>{
+      intro.style.display='none';
+      warning.style.display='flex';
+      setTimeout(()=>{
+        warning.style.display='none';
+        site.style.display='flex';
+      },2400);
+    },500);
+  }
 }
-function finish() {
- document.body.innerHTML='<h1 style="color:green">СЕАНС ЗАВЕРШЁН</h1>';
-}
+setTimeout(nextLine,500);
+
+document.getElementById('form').addEventListener('submit',e=>{
+  e.preventDefault();
+  const msg=document.getElementById('msg');
+  if(document.getElementById('pass').value==='123456'){
+    msg.style.color='#72e69a';
+    msg.textContent='Пароль принят. Доступ разрешён.';
+    document.getElementById('exit').style.display='block';
+    document.getElementById('pass').disabled=true;
+    e.target.querySelector('button').disabled=true;
+  }else{
+    msg.style.color='#ff5555';
+    msg.textContent='Неверный пароль. Попробуйте ещё раз.';
+  }
+});
+document.getElementById('exit').addEventListener('click',()=>{
+  site.innerHTML='<main class="panel"><h2 style="color:#72e69a">ДЕМОНСТРАЦИЯ ЗАВЕРШЕНА</h2><p>Можно закрыть эту вкладку.</p></main>';
+});
 </script>
 </body>
 </html>
