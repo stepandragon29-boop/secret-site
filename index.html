@@ -14,7 +14,7 @@ body{margin:0;background:#050505;color:#eee;font-family:Arial,Helvetica,sans-ser
 .topline{color:#ff4242;letter-spacing:3px;font-size:12px;margin-bottom:18px}
 #log{font:14px/1.8 monospace;color:#79e69a;min-height:150px;white-space:pre-wrap}
 .progress{height:7px;background:#292929;border-radius:9px;overflow:hidden;margin-top:18px}
-#bar{height:100%;width:0;background:#e32626;transition:width .15s linear}
+#bar{height:100%;width:0;background:#e32626;transition:width .12s linear}
 #warning{display:none;flex-direction:column;text-align:center;background:#080303}
 #warning h1{font-size:clamp(44px,12vw,92px);line-height:1;color:#ff2525;text-shadow:0 0 22px #f00;margin:0 0 20px}
 #warning p{color:#ddd;font-size:18px}
@@ -24,7 +24,7 @@ body{margin:0;background:#050505;color:#eee;font-family:Arial,Helvetica,sans-ser
 .panel h2{color:#ff3030;font-size:36px;margin:0 0 14px}
 .panel p{color:#ccc;line-height:1.5}
 input{width:100%;padding:15px;border-radius:8px;border:1px solid #555;background:#080808;color:white;font-size:18px;text-align:center;letter-spacing:5px}
-button{width:100%;margin-top:16px;padding:15px;border:0;border-radius:8px;background:#b51616;color:white;font-weight:bold;letter-spacing:2px}
+button{width:100%;margin-top:16px;padding:15px;border:0;border-radius:8px;background:#b51616;color:white;font-weight:bold;letter-spacing:2px;cursor:pointer}
 #exit{display:none;background:#242424;border:1px solid #ff3030}
 #msg{min-height:22px;color:#ff5555;font-size:13px;line-height:1.4}
 </style>
@@ -60,53 +60,67 @@ button{width:100%;margin-top:16px;padding:15px;border:0;border-radius:8px;backgr
 </section>
 
 <script>
-const intro=document.getElementById('intro');
-const warning=document.getElementById('warning');
-const site=document.getElementById('site');
-const log=document.getElementById('log');
-const bar=document.getElementById('bar');
-const lines=[
+const intro = document.getElementById('intro');
+const warning = document.getElementById('warning');
+const site = document.getElementById('site');
+const log = document.getElementById('log');
+const bar = document.getElementById('bar');
+
+const lines = [
   '[OK] Запуск демонстрационного интерфейса...',
   '[OK] Проверка тестового соединения...',
   '[OK] Подготовка визуальных эффектов...',
+  '[OK] Анализ системных процессов...',
+  '[OK] Формирование отчёта...',
   '[OK] Сканирование завершено (имитация).'
 ];
-let i=0;
-function nextLine(){
-  if(i<lines.length){
-    log.textContent+=lines[i]+'\n';
+
+let i = 0;
+function nextLine() {
+  if (i < lines.length) {
+    log.textContent += lines[i] + '\n';
     i++;
-    bar.style.width=(i/lines.length*100)+'%';
-    setTimeout(nextLine,650);
-  }else{
-    setTimeout(()=>{
-      intro.style.display='none';
-      warning.style.display='flex';
-      setTimeout(()=>{
-        warning.style.display='none';
-        site.style.display='flex';
-      },2400);
-    },500);
+    bar.style.width = (i / lines.length * 100) + '%';
+    setTimeout(nextLine, 280); // быстрее
+  } else {
+    setTimeout(() => {
+      intro.style.display = 'none';
+      warning.style.display = 'flex';
+      setTimeout(() => {
+        warning.style.display = 'none';
+        site.style.display = 'flex';
+      }, 1400); // тоже быстрее
+    }, 300);
   }
 }
-setTimeout(nextLine,500);
+setTimeout(nextLine, 300);
 
-document.getElementById('form').addEventListener('submit',e=>{
+document.getElementById('form').addEventListener('submit', e => {
   e.preventDefault();
-  const msg=document.getElementById('msg');
-  if(document.getElementById('pass').value==='123456'){
-    msg.style.color='#ff5555';
-    msg.textContent='Все ваши файлы зарезервированы для восстановления файлов. Введите код разработчика';
-    document.getElementById('exit').style.display='block';
-    document.getElementById('pass').disabled=true;
-    e.target.querySelector('button').disabled=true;
-  }else{
-    msg.style.color='#ff5555';
-    msg.textContent='Неверный пароль. Попробуйте ещё раз.';
+  const msg = document.getElementById('msg');
+  if (document.getElementById('pass').value === '123456') {
+    msg.style.color = '#72e69a';
+    msg.textContent = 'Пароль принят. Доступ разрешён.';
+    document.getElementById('exit').style.display = 'block';
+    document.getElementById('pass').disabled = true;
+    e.target.querySelector('button').disabled = true;
+  } else {
+    msg.style.color = '#ff5555';
+    msg.textContent = 'Неверный пароль. Попробуйте ещё раз.';
   }
 });
-document.getElementById('exit').addEventListener('click',()=>{
-  site.innerHTML='<main class="panel"><h2 style="color:#72e69a">ДЕМОНСТРАЦИЯ ЗАВЕРШЕНА</h2><p>Можно закрыть эту вкладку.</p></main>';
+
+document.getElementById('exit').addEventListener('click', () => {
+  site.innerHTML = `
+    <main class="panel">
+      <h2 style="color:#72e69a">ВЫ ПРОШЛИ</h2>
+      <p>Демонстрация успешно завершена.<br>Можно закрыть вкладку.</p>
+    </main>
+  `;
+  // Пытаемся закрыть вкладку (работает только если страница была открыта скриптом)
+  setTimeout(() => {
+    window.close();
+  }, 800);
 });
 </script>
 </body>
