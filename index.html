@@ -1,0 +1,72 @@
+
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Вас заметили</title>
+<style>
+body {
+  background:#080808;
+  color:white;
+  font-family:Arial;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  min-height:100vh;
+  margin:0;
+}
+main {
+  background:#111;
+  border:1px solid red;
+  border-radius:15px;
+  padding:25px;
+  text-align:center;
+  width:85%;
+  max-width:400px;
+}
+h1 {color:#ff3030}
+input {
+  padding:14px;
+  width:85%;
+  background:#080808;
+  color:white;
+  border:1px solid red;
+  text-align:center;
+}
+button {
+  padding:14px;
+  width:100%;
+  margin-top:15px;
+  background:#b51616;
+  color:white;
+  border:0;
+  border-radius:7px;
+}
+#exit {display:none}
+</style>
+</head>
+<body>
+<main>
+<h1>ВАС ЗАМЕТИЛИ</h1>
+<p>Шуточная демонстрация системы.<br>Введите пароль разработчика.</p>
+<input id="pass" type="password" placeholder="Пароль">
+<button onclick="check()">ПРОВЕРИТЬ</button>
+<p id="msg"></p>
+<button id="exit" onclick="finish()">ВЫЙТИ</button>
+</main>
+<script>
+function check() {
+ if(document.getElementById('pass').value === '123456') {
+  document.getElementById('msg').textContent='Пароль принят!';
+  document.getElementById('exit').style.display='block';
+ } else {
+  document.getElementById('msg').textContent='Неверный пароль!';
+ }
+}
+function finish() {
+ document.body.innerHTML='<h1 style="color:green">СЕАНС ЗАВЕРШЁН</h1>';
+}
+</script>
+</body>
+</html>
