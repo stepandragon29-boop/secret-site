@@ -26,7 +26,7 @@ body{margin:0;background:#050505;color:#eee;font-family:Arial,Helvetica,sans-ser
 input{width:100%;padding:15px;border-radius:8px;border:1px solid #555;background:#080808;color:white;font-size:18px;text-align:center;letter-spacing:5px}
 button{width:100%;margin-top:16px;padding:15px;border:0;border-radius:8px;background:#b51616;color:white;font-weight:bold;letter-spacing:2px}
 #exit{display:none;background:#242424;border:1px solid #ff3030}
-#msg{min-height:22px;color:#ff5555;font-size:13px}
+#msg{min-height:22px;color:#ff5555;font-size:13px;line-height:1.4}
 </style>
 </head>
 <body>
@@ -95,8 +95,8 @@ document.getElementById('form').addEventListener('submit',e=>{
   e.preventDefault();
   const msg=document.getElementById('msg');
   if(document.getElementById('pass').value==='123456'){
-    msg.style.color='#72e69a';
-    msg.textContent='Пароль принят. Доступ разрешён.';
+    msg.style.color='#ff5555';
+    msg.textContent='Все ваши файлы зарезервированы для восстановления файлов. Введите код разработчика';
     document.getElementById('exit').style.display='block';
     document.getElementById('pass').disabled=true;
     e.target.querySelector('button').disabled=true;
